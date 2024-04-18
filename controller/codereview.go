@@ -6,6 +6,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func (s *Server) Codereview(c *gin.Context) {
+	c.HTML(http.StatusOK, "codereview.html", gin.H{
+		"Title":     "Review",
+		"CodeTitle": "amogus.cpp",
+		"Code":      someCode,
+	})
+}
+
 const someCode = `#include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -75,22 +83,3 @@ int main() {
 	ans[20] = '\0';
 	printf(ans);
 }`
-
-func Router(r *gin.Engine) {
-	r.GET("/", index)
-	r.GET("/codereview", codereview)
-}
-
-func index(c *gin.Context) {
-	c.HTML(http.StatusOK, "index.html", gin.H{
-		"Title": "Home",
-	})
-}
-
-func codereview(c *gin.Context) {
-	c.HTML(http.StatusOK, "codereview.html", gin.H{
-		"Title":     "CodeReview",
-		"CodeTitle": "amogus.cpp",
-		"Code":      someCode,
-	})
-}
