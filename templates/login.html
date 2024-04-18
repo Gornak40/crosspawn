@@ -1,0 +1,30 @@
+{{ template "header.html" . }}
+
+<div class="container mt-5">
+	<div class="row">
+		<div class="col-md-6 offset-md-3">
+			<div class="card">
+				<div class="card-body">
+					<form>
+						<div class="mb-3">
+							<label for="ejLogin" class="form-label">Ej login</label>
+							<input type="text" class="form-control" id="ejLogin" name="ejLogin" required>
+						</div>
+						<div class="mb-3">
+							<label for="ejPassword" class="form-label">Ej password</label>
+							<input type="password" class="form-control" id="ejPassword" name="ejPassword" required>
+						</div>
+						<div class="mb-3">
+							<label for="contestId" class="form-label">Contest ID</label>
+							<input type="number" class="form-control" id="contestId" name="contestId" required>
+						</div>
+						<button type="submit" class="btn btn-primary">Submit</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+{{ template "footer.html" . }}

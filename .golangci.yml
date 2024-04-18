@@ -16,6 +16,7 @@ linters:
     - wsl
     - wrapcheck
     - exhaustruct
+    - varnamelen
     - godox
 
 linters-settings:
