@@ -1,14 +1,13 @@
 package models
 
 import (
+	"github.com/Gornak40/crosspawn/config"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
 
-const sqlitePath = "test.db"
-
-func ConnectDatabase() (*gorm.DB, error) {
-	db, err := gorm.Open(sqlite.Open(sqlitePath), &gorm.Config{})
+func ConnectDatabase(cfg *config.DBConfig) (*gorm.DB, error) {
+	db, err := gorm.Open(sqlite.Open(cfg.SqlitePath), &gorm.Config{})
 	if err != nil {
 		return nil, err
 	}

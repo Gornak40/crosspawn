@@ -5,21 +5,26 @@
 		<div class="col-md-6 offset-md-3">
 			<div class="card">
 				<div class="card-body">
-					<form>
+					{{ if .User }}
+					<form action="/logout" method="POST">
 						<div class="mb-3">
-							<label for="ejLogin" class="form-label">Ej login</label>
+							<label>You logged as <b>{{ .User }}</b></label>
+						</div>
+						<button type="submit" class="btn btn-primary btn-lg">Logout</button>
+					</form>
+					{{ else }}
+					<form action="/login" method="POST">
+						<div class="mb-3">
+							<label for="ejLogin" class="form-label">Ejudge login</label>
 							<input type="text" class="form-control" id="ejLogin" name="ejLogin" required>
 						</div>
 						<div class="mb-3">
-							<label for="ejPassword" class="form-label">Ej password</label>
+							<label for="ejPassword" class="form-label">Ejudge password</label>
 							<input type="password" class="form-control" id="ejPassword" name="ejPassword" required>
 						</div>
-						<div class="mb-3">
-							<label for="contestId" class="form-label">Contest ID</label>
-							<input type="number" class="form-control" id="contestId" name="contestId" required>
-						</div>
-						<button type="submit" class="btn btn-primary">Submit</button>
+						<button type="submit" class="btn btn-primary btn-lg">Submit</button>
 					</form>
+					{{ end }}
 				</div>
 			</div>
 		</div>
