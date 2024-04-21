@@ -34,20 +34,25 @@ func (s *Server) InitRouter() *gin.Engine {
 	r.LoadHTMLGlob("./templates/*")
 	r.StaticFile("/favicon.ico", "./static/img/favicon.ico")
 
-	r.GET("/login", s.LoginGET)
-	r.POST("/login", s.LoginPOST)
+	{
+		r.GET("/login", s.LoginGET)
+		r.POST("/login", s.LoginPOST)
+	}
 
-	ua := r.Group("/")
-	ua.Use(s.userMiddleware)
+	ua := r.Group("/", s.userMiddleware)
 	{
 		ua.GET("/", s.IndexGET)
 		ua.GET("/codereview", s.CodereviewGET)
 		ua.GET("/admin", s.AdminGET)
-		ua.GET("/manage", s.ManageGET)
 
 		ua.POST("/logout", s.LogoutPOST)
 		ua.POST("/", s.IndexPOST)
 		ua.POST("/admin", s.AdminPOST)
+	}
+
+	aa := ua.Group("/", s.adminMiddleware)
+	{
+		aa.GET("/manage", s.ManageGET)
 	}
 
 	return r

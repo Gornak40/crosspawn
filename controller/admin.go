@@ -18,6 +18,7 @@ type adminForm struct {
 	JWT string `binding:"required" form:"jwt"`
 }
 
+// TODO: redirect to /login if admin is set.
 func (s *Server) AdminGET(c *gin.Context) {
 	session := sessions.Default(c)
 	user := session.Get("user")
@@ -64,4 +65,18 @@ func (s *Server) validateJWT(t, user string) error {
 	}
 
 	return nil
+}
+
+func (s *Server) adminMiddleware(c *gin.Context) {
+	session := sessions.Default(c)
+	admin := session.Get("admin")
+
+	if admin == nil {
+		c.Redirect(http.StatusFound, "/admin")
+		c.Abort()
+
+		return
+	}
+
+	c.Next()
 }
