@@ -2,10 +2,12 @@ package controller
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 var (
@@ -37,7 +39,7 @@ func (s *Server) AdminPOST(c *gin.Context) {
 	session := sessions.Default(c)
 	user := session.Get("user")
 
-	if err := parseUserJWT(form.JWT, user.(string)); err != nil { //nolint:forcetypeassert // it's ok
+	if err := s.validateJWT(form.JWT, user.(string)); err != nil { //nolint:forcetypeassert // it's ok
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 
 		return
@@ -49,7 +51,17 @@ func (s *Server) AdminPOST(c *gin.Context) {
 	c.Redirect(http.StatusFound, "/manage")
 }
 
-// TODO: check JWT.
-func parseUserJWT(_, _ string) error {
+func (s *Server) validateJWT(t, user string) error {
+	claims := jwt.MapClaims{}
+	_, err := jwt.ParseWithClaims(t, claims, func(token *jwt.Token) (interface{}, error) {
+		return []byte(s.cfg.JWTSecret), nil
+	})
+	if err != nil {
+		return err
+	}
+	if claims["sub"] != user {
+		return fmt.Errorf("%w: token is not owned by %s", ErrForeignUser, user)
+	}
+
 	return nil
 }

@@ -21,9 +21,9 @@ func main() {
 
 	ej := ejudge.NewEjClient(&cfg.EjConfig)
 
-	s := controller.NewServer(db, ej)
+	s := controller.NewServer(db, ej, &cfg.ServerConfig)
 
-	r := s.InitRouter(&cfg.GinConfig)
+	r := s.InitRouter()
 	if err := r.Run(); err != nil {
 		logrus.WithError(err).Fatal("failed to init router")
 	}

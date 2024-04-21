@@ -12,21 +12,23 @@ import (
 const sessionName = "crosspawn"
 
 type Server struct {
-	db *gorm.DB
-	ej *ejudge.EjClient
+	db  *gorm.DB
+	ej  *ejudge.EjClient
+	cfg *config.ServerConfig
 }
 
-func NewServer(db *gorm.DB, ej *ejudge.EjClient) *Server {
+func NewServer(db *gorm.DB, ej *ejudge.EjClient, cfg *config.ServerConfig) *Server {
 	return &Server{
-		db: db,
-		ej: ej,
+		db:  db,
+		ej:  ej,
+		cfg: cfg,
 	}
 }
 
-func (s *Server) InitRouter(cfg *config.GinConfig) *gin.Engine {
+func (s *Server) InitRouter() *gin.Engine {
 	r := gin.Default()
 
-	store := cookie.NewStore([]byte(cfg.Secret))
+	store := cookie.NewStore([]byte(s.cfg.GinSecret))
 	r.Use(sessions.Sessions(sessionName, store))
 
 	r.LoadHTMLGlob("./templates/*")
