@@ -16,12 +16,6 @@ func (s *Server) IndexGET(c *gin.Context) {
 	session := sessions.Default(c)
 	user := session.Get("user")
 
-	if user == nil {
-		c.Redirect(http.StatusFound, "/login")
-
-		return
-	}
-
 	contest := session.Get("contest")
 	problem := session.Get("problem")
 
@@ -38,21 +32,14 @@ func (s *Server) IndexGET(c *gin.Context) {
 }
 
 func (s *Server) IndexPOST(c *gin.Context) {
-	session := sessions.Default(c)
-	user := session.Get("user")
-
-	if user == nil {
-		c.Redirect(http.StatusFound, "/login")
-
-		return
-	}
-
 	var form reviewForm
 	if err := c.ShouldBind(&form); err != nil {
-		c.Redirect(http.StatusFound, "/")
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 
 		return
 	}
+
+	session := sessions.Default(c)
 
 	session.Set("contest", form.Contest)
 	session.Set("problem", form.Problem)

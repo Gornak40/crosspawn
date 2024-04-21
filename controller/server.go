@@ -32,13 +32,21 @@ func (s *Server) InitRouter(cfg *config.GinConfig) *gin.Engine {
 	r.LoadHTMLGlob("./templates/*")
 	r.StaticFile("/favicon.ico", "./static/img/favicon.ico")
 
-	r.GET("/", s.IndexGET)
-	r.GET("/codereview", s.CodereviewGET)
 	r.GET("/login", s.LoginGET)
-
 	r.POST("/login", s.LoginPOST)
-	r.POST("/logout", s.LogoutPOST)
-	r.POST("/", s.IndexPOST)
+
+	ua := r.Group("/")
+	ua.Use(s.userMiddleware)
+	{
+		ua.GET("/", s.IndexGET)
+		ua.GET("/codereview", s.CodereviewGET)
+		ua.GET("/admin", s.AdminGET)
+		ua.GET("/manage", s.ManageGET)
+
+		ua.POST("/logout", s.LogoutPOST)
+		ua.POST("/", s.IndexPOST)
+		ua.POST("/admin", s.AdminPOST)
+	}
 
 	return r
 }

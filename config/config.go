@@ -23,7 +23,8 @@ type DBConfig struct {
 }
 
 type GinConfig struct {
-	Secret string `json:"GIN_SECRET"`
+	Secret    string `json:"GIN_SECRET"`
+	JWTSecret string `json:"JWT_SECRET"`
 }
 
 func NewConfig() (*Config, error) {

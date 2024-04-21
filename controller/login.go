@@ -14,16 +14,12 @@ type loginForm struct {
 
 func (s *Server) LoginGET(c *gin.Context) {
 	session := sessions.Default(c)
+	user := session.Get("user")
 
 	c.HTML(http.StatusOK, "login.html", gin.H{
 		"Title": "Login",
-		"User":  session.Get("user"),
+		"User":  user,
 	})
-}
-
-// TODO: add auth.
-func (s *Server) authUser(_, _ string) bool {
-	return true
 }
 
 func (s *Server) LoginPOST(c *gin.Context) {
@@ -31,13 +27,13 @@ func (s *Server) LoginPOST(c *gin.Context) {
 
 	var form loginForm
 	if err := c.ShouldBind(&form); err != nil {
-		c.Redirect(http.StatusBadRequest, "/login")
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 
 		return
 	}
 
 	if !s.authUser(form.Login, form.Password) {
-		c.Redirect(http.StatusUnauthorized, "/login")
+		c.Redirect(http.StatusFound, "/login")
 
 		return
 	}
@@ -49,7 +45,27 @@ func (s *Server) LoginPOST(c *gin.Context) {
 
 func (s *Server) LogoutPOST(c *gin.Context) {
 	session := sessions.Default(c)
+
 	session.Clear()
 	_ = session.Save()
 	c.Redirect(http.StatusFound, "/")
+}
+
+// TODO: add auth.
+func (s *Server) authUser(_, _ string) bool {
+	return true
+}
+
+func (s *Server) userMiddleware(c *gin.Context) {
+	session := sessions.Default(c)
+	user := session.Get("user")
+
+	if user == nil {
+		c.Redirect(http.StatusFound, "/login")
+		c.Abort()
+
+		return
+	}
+
+	c.Next()
 }

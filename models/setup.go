@@ -12,7 +12,7 @@ func ConnectDatabase(cfg *config.DBConfig) (*gorm.DB, error) {
 		return nil, err
 	}
 
-	if err := db.AutoMigrate(&User{}); err != nil {
+	if err := db.AutoMigrate(new(User), new(Contest), new(Run)); err != nil {
 		return nil, err
 	}
 
