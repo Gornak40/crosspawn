@@ -17,6 +17,7 @@ linters:
     - wrapcheck
     - exhaustruct
     - varnamelen
+    - tagliatelle
     - godox
 
 linters-settings:

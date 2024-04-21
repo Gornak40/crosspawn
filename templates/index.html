@@ -1,3 +1,26 @@
 {{ template "header.html" . }}
 
+<div class="container mt-5">
+	<div class="row">
+		<div class="col-md-6 offset-md-3">
+			<div class="card">
+				<div class="card-body">
+					<form action="/" method="POST">
+						<div class="mb-3">
+							<label for="ejContest" class="form-label">Ejudge contest ID</label>
+							<input type="number" class="form-control" id="ejContest" name="ejContest" required>
+						</div>
+						<div class="mb-3">
+							<label for="ejProblem" class="form-label">Ejudge problem (for example B)</label>
+							<input type="text" class="form-control" id="ejProblem" name="ejProblem" required>
+						</div>
+						<button type="submit" class="btn btn-primary btn-lg">Review</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
 {{ template "footer.html" . }}
