@@ -1,0 +1,21 @@
+{{ template "header.html". }}
+
+<div class="container mt-5">
+	<div class="row">
+		<div class="col-md-6 offset-md-3">
+			<div class="card">
+				<div class="card-body">
+					<form action="/admin" method="POST">
+						<div class="mb-3">
+							<label for="jwt" class="form-label">JWT</label>
+							<input type="password" class="form-control" id="jwt" name="jwt" required>
+						</div>
+						<button type="submit" class="btn btn-primary btn-lg">Submit</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{{ template "footer.html". }}

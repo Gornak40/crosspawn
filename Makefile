@@ -1,4 +1,4 @@
-.PHONY: build run clean test
+.PHONY: build run clean test lint
 
 SERVICE_NAME=crosspawn
 

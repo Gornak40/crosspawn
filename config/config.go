@@ -9,7 +9,7 @@ import (
 type Config struct {
 	EjConfig
 	DBConfig
-	GinConfig
+	ServerConfig
 }
 
 type EjConfig struct {
@@ -22,8 +22,9 @@ type DBConfig struct {
 	SqlitePath string `json:"SQLITE_PATH"`
 }
 
-type GinConfig struct {
-	Secret string `json:"GIN_SECRET"`
+type ServerConfig struct {
+	GinSecret string `json:"GIN_SECRET"`
+	JWTSecret string `json:"JWT_SECRET"`
 }
 
 func NewConfig() (*Config, error) {

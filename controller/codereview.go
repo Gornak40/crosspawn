@@ -11,12 +11,6 @@ func (s *Server) CodereviewGET(c *gin.Context) {
 	session := sessions.Default(c)
 	user := session.Get("user")
 
-	if user == nil {
-		c.Redirect(http.StatusUnauthorized, "/login")
-
-		return
-	}
-
 	contest := session.Get("contest")
 	problem := session.Get("problem")
 

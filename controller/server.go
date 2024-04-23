@@ -12,33 +12,50 @@ import (
 const sessionName = "crosspawn"
 
 type Server struct {
-	db *gorm.DB
-	ej *ejudge.EjClient
+	db  *gorm.DB
+	ej  *ejudge.EjClient
+	cfg *config.ServerConfig
 }
 
-func NewServer(db *gorm.DB, ej *ejudge.EjClient) *Server {
+func NewServer(db *gorm.DB, ej *ejudge.EjClient, cfg *config.ServerConfig) *Server {
 	return &Server{
-		db: db,
-		ej: ej,
+		db:  db,
+		ej:  ej,
+		cfg: cfg,
 	}
 }
 
-func (s *Server) InitRouter(cfg *config.GinConfig) *gin.Engine {
+func (s *Server) InitRouter() *gin.Engine {
 	r := gin.Default()
 
-	store := cookie.NewStore([]byte(cfg.Secret))
+	store := cookie.NewStore([]byte(s.cfg.GinSecret))
 	r.Use(sessions.Sessions(sessionName, store))
 
 	r.LoadHTMLGlob("./templates/*")
 	r.StaticFile("/favicon.ico", "./static/img/favicon.ico")
 
-	r.GET("/", s.IndexGET)
-	r.GET("/codereview", s.CodereviewGET)
-	r.GET("/login", s.LoginGET)
+	{
+		r.GET("/login", s.LoginGET)
+		r.POST("/login", s.LoginPOST)
+	}
 
-	r.POST("/login", s.LoginPOST)
-	r.POST("/logout", s.LogoutPOST)
-	r.POST("/", s.IndexPOST)
+	ua := r.Group("/", s.userMiddleware)
+	{
+		ua.GET("/", s.IndexGET)
+		ua.GET("/codereview", s.CodereviewGET)
+		ua.GET("/admin", s.AdminGET)
+
+		ua.POST("/logout", s.LogoutPOST)
+		ua.POST("/", s.IndexPOST)
+		ua.POST("/admin", s.AdminPOST)
+	}
+
+	aa := ua.Group("/manage", s.adminMiddleware)
+	{
+		aa.GET("/", s.ManageGET)
+		aa.POST("/", s.ManagePOST)
+		aa.POST("/flip", s.ManageFlipPOST)
+	}
 
 	return r
 }
