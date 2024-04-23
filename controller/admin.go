@@ -32,7 +32,7 @@ func (s *Server) AdminGET(c *gin.Context) {
 func (s *Server) AdminPOST(c *gin.Context) {
 	var form adminForm
 	if err := c.ShouldBind(&form); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 
 		return
 	}
@@ -41,7 +41,7 @@ func (s *Server) AdminPOST(c *gin.Context) {
 	user := session.Get("user")
 
 	if err := s.validateJWT(form.JWT, user.(string)); err != nil { //nolint:forcetypeassert // it's ok
-		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 
 		return
 	}

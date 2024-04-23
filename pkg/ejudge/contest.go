@@ -8,16 +8,20 @@ import (
 )
 
 type EjContest struct {
+	Contest struct {
+		ID   uint   `json:"id"`
+		Name string `json:"name"`
+	} `json:"contest"`
 	Problems []struct {
-		ID        int    `json:"id"`
+		ID        uint   `json:"id"`
 		ShortName string `json:"short_name"`
 		LongName  string `json:"long_name"`
 	} `json:"problems"`
 }
 
-func (ej *EjClient) GetContestStatus(id int) (*EjContest, error) {
+func (ej *EjClient) GetContestStatus(id uint) (*EjContest, error) {
 	params := url.Values{
-		"contest_id": {strconv.Itoa(id)},
+		"contest_id": {strconv.Itoa(int(id))},
 	}
 	answer, err := ej.shoot(context.TODO(), "ej/api/v1/client/contest-status-json", params)
 	if err != nil {

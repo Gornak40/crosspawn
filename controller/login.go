@@ -27,7 +27,7 @@ func (s *Server) LoginPOST(c *gin.Context) {
 
 	var form loginForm
 	if err := c.ShouldBind(&form); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 
 		return
 	}

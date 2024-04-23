@@ -50,9 +50,11 @@ func (s *Server) InitRouter() *gin.Engine {
 		ua.POST("/admin", s.AdminPOST)
 	}
 
-	aa := ua.Group("/", s.adminMiddleware)
+	aa := ua.Group("/manage", s.adminMiddleware)
 	{
-		aa.GET("/manage", s.ManageGET)
+		aa.GET("/", s.ManageGET)
+		aa.POST("/", s.ManagePOST)
+		aa.POST("/flip", s.ManageFlipPOST)
 	}
 
 	return r

@@ -34,7 +34,7 @@ func (s *Server) IndexGET(c *gin.Context) {
 func (s *Server) IndexPOST(c *gin.Context) {
 	var form reviewForm
 	if err := c.ShouldBind(&form); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 
 		return
 	}
