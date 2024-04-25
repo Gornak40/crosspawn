@@ -1,20 +1,27 @@
 .PHONY: build run clean test lint
 
-SERVICE_NAME=crosspawn
+BINARIES=crosspawn poller
+BIN_FOLDER=bin
 
-BINARY_PATH=./bin/${SERVICE_NAME}
+build: $(BINARIES)
 
-build:
-	go build -o $(BINARY_PATH) ./cmd/$(SERVICE_NAME)
+crosspawn:
+	@go build -o ${BIN_FOLDER}/crosspawn ./cmd/crosspawn
 
-run: build
-	@$(BINARY_PATH)
+poller:
+	@go build -o ${BIN_FOLDER}/poller ./cmd/poller
+
+run-crosspawn: crosspawn
+	@${BIN_FOLDER}/crosspawn
+
+run-poller: poller
+	@${BIN_FOLDER}/poller
 
 clean:
-	rm -f $(BINARY_PATH)
+	@rm $(BIN_FOLDER)/*
 
 test:
-	go test -v ./...
+	@go test -v ./...
 
 lint:
-	golangci-lint run ./...
+	@golangci-lint run ./...

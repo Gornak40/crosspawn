@@ -23,7 +23,7 @@ func (ej *EjClient) GetContestStatus(id uint) (*EjContest, error) {
 	params := url.Values{
 		"contest_id": {strconv.Itoa(int(id))},
 	}
-	answer, err := ej.shoot(context.TODO(), "ej/api/v1/client/contest-status-json", params)
+	answer, err := ej.shootAPI(context.TODO(), "ej/api/v1/client/contest-status-json", params)
 	if err != nil {
 		return nil, err
 	}

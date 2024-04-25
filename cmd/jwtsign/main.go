@@ -3,11 +3,10 @@ package main
 import (
 	"flag"
 	"fmt"
-	"os"
 	"time"
 
+	"github.com/Gornak40/crosspawn/config"
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/joho/godotenv"
 	"github.com/sirupsen/logrus"
 )
 
@@ -26,11 +25,12 @@ func main() {
 		"duration": *duration,
 	}).Info("generating JWT")
 
-	if err := godotenv.Load(); err != nil {
-		logrus.WithError(err).Fatal("failed to load .env file")
+	cfg, err := config.NewConfig()
+	if err != nil {
+		logrus.WithError(err).Fatal("failed to load config")
 	}
 
-	key := os.Getenv("JWT_SECRET")
+	key := cfg.JWTSecret
 	if key == "" {
 		logrus.Fatal("JWT_SECRET env var is not set")
 	}

@@ -1,45 +1,46 @@
 package config
 
 import (
-	"encoding/json"
+	"os"
 
-	"github.com/joho/godotenv"
+	"github.com/go-zoox/ini"
 )
 
+const configFile = "config.ini"
+
 type Config struct {
-	EjConfig
-	DBConfig
-	ServerConfig
+	EjConfig     `ini:"ejudge"`
+	DBConfig     `ini:"database"`
+	ServerConfig `ini:"server"`
 }
 
 type EjConfig struct {
-	APIKey    string `json:"EJ_API_KEY"`
-	APISecret string `json:"EJ_API_SECRET"`
-	URL       string `json:"EJ_URL"`
+	APIKey    string `ini:"API_KEY"`
+	APISecret string `ini:"API_SECRET"`
+	URL       string `ini:"URL"`
 }
 
 type DBConfig struct {
-	SqlitePath string `json:"SQLITE_PATH"`
+	SqlitePath string `ini:"SQLITE_PATH"`
 }
 
 type ServerConfig struct {
-	GinSecret string `json:"GIN_SECRET"`
-	JWTSecret string `json:"JWT_SECRET"`
+	GinSecret        string `ini:"GIN_SECRET"`
+	JWTSecret        string `ini:"JWT_SECRET"`
+	PollBatchSize    int64  `ini:"POLL_BATCH_SIZE"`
+	PollDelaySeconds int64  `ini:"POLL_DELAY_SECONDS"`
 }
 
 func NewConfig() (*Config, error) {
-	env, err := godotenv.Read()
+	data, err := os.ReadFile(configFile)
 	if err != nil {
-		return nil, err
-	}
-	senv, err := json.Marshal(env)
-	if err != nil {
-		return nil, err
-	}
-	var cfg Config
-	if err := json.Unmarshal(senv, &cfg); err != nil {
 		return nil, err
 	}
 
-	return &cfg, nil
+	var config Config
+	if err := ini.Unmarshal(data, &config); err != nil {
+		return nil, err
+	}
+
+	return &config, nil
 }

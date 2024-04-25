@@ -22,3 +22,4 @@ go.work
 /bin/
 /test.db
 /.env
+/config.ini
