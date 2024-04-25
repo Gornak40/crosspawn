@@ -19,8 +19,6 @@ linters:
     - varnamelen
     - tagliatelle
     - godox
-    - copyloopvar
-    - intrange
 
 linters-settings:
   cyclop:

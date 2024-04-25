@@ -14,9 +14,8 @@ func (s *Server) Poll() error {
 	}
 
 	for _, contest := range contests {
-		contest := contest
 		logrus.WithField("contestID", contest.EjudgeID).Info("polling contest")
-		if err := s.pollContest(&contest); err != nil {
+		if err := s.pollContest(&contest); err != nil { //nolint:gosec // G601: Implicit memory aliasing in for loop.
 			logrus.WithError(err).WithField("contestID", contest.EjudgeID).Errorf("failed to poll contest")
 		}
 	}
@@ -35,9 +34,8 @@ func (s *Server) pollContest(dbContest *models.Contest) error {
 	}
 
 	for _, run := range runs.Runs {
-		run := run
-		logrus.Info(run)
-		dbRun := models.NewRunFromEj(&run, "babayka")
+		logrus.Info(run)                              // TODO: remove
+		dbRun := models.NewRunFromEj(&run, "babayka") //nolint:gosec // G601: Implicit memory aliasing in for loop.
 		if res := s.db.Create(dbRun); res.Error != nil {
 			logrus.WithError(err).WithFields(logrus.Fields{"contestID": run.ContestID, "runID": run.RunID}).
 				Error("failed to save run")
