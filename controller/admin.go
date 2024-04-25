@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/Gornak40/crosspawn/internal/alerts"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
@@ -23,8 +24,9 @@ func (s *Server) AdminGET(c *gin.Context) {
 	user := session.Get("user")
 
 	c.HTML(http.StatusOK, "admin.html", gin.H{
-		"Title": "Admin",
-		"User":  user,
+		"Title":   "Admin",
+		"User":    user,
+		"Flashes": alerts.Get(session),
 	})
 }
 
@@ -37,23 +39,33 @@ func (s *Server) AdminPOST(c *gin.Context) {
 	}
 
 	session := sessions.Default(c)
-	user := session.Get("user")
+	user, ok := session.Get("user").(string)
 
-	if err := s.validateJWT(form.JWT, user.(string)); err != nil { //nolint:forcetypeassert // it's ok
+	if !ok {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "user is not authenticated"})
+
+		return
+	}
+
+	if err := s.validateJWT(form.JWT, user); err != nil {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 
 		return
 	}
 
-	session.Set("admin", true)
+	session.Set("jwt", form.JWT)
 	_ = session.Save()
 
+	_ = alerts.Add(session, alerts.Alert{ // TODO: add expiration time
+		Message: "JWT is valid",
+		Type:    alerts.TypeSuccess,
+	})
 	c.Redirect(http.StatusFound, "/manage")
 }
 
-func (s *Server) validateJWT(t, user string) error {
+func (s *Server) validateJWT(token, user string) error {
 	claims := jwt.MapClaims{}
-	_, err := jwt.ParseWithClaims(t, claims, func(_ *jwt.Token) (interface{}, error) {
+	_, err := jwt.ParseWithClaims(token, claims, func(_ *jwt.Token) (interface{}, error) {
 		return []byte(s.cfg.JWTSecret), nil
 	})
 	if err != nil {
@@ -66,12 +78,32 @@ func (s *Server) validateJWT(t, user string) error {
 	return nil
 }
 
-// TODO: check jwt here, it can expire.
 func (s *Server) adminMiddleware(c *gin.Context) {
 	session := sessions.Default(c)
-	admin := session.Get("admin")
+	user, ok := session.Get("user").(string)
+	if !ok {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "user is not authenticated"})
 
-	if admin == nil {
+		return
+	}
+
+	token, ok := session.Get("jwt").(string)
+	if !ok {
+		_ = alerts.Add(session, alerts.Alert{
+			Message: "You should enter JWT",
+			Type:    alerts.TypeWarning,
+		})
+		c.Redirect(http.StatusFound, "/admin")
+		c.Abort()
+
+		return
+	}
+
+	if err := s.validateJWT(token, user); err != nil {
+		_ = alerts.Add(session, alerts.Alert{
+			Message: "Your JWT is expired",
+			Type:    alerts.TypeDanger,
+		})
 		c.Redirect(http.StatusFound, "/admin")
 		c.Abort()
 

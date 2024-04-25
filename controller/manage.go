@@ -3,6 +3,7 @@ package controller
 import (
 	"net/http"
 
+	"github.com/Gornak40/crosspawn/internal/alerts"
 	"github.com/Gornak40/crosspawn/models"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
@@ -27,6 +28,7 @@ func (s *Server) ManageGET(c *gin.Context) {
 		"Title":    "Manage",
 		"User":     user,
 		"Contests": contests,
+		"Flashes":  alerts.Get(session),
 	})
 }
 

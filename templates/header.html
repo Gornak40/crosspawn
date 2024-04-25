@@ -38,6 +38,9 @@
 					</li>
 				</ul>
 			</div>
+			{{ range .Flashes }}
+			<span class="badge rounded-pill text-bg-{{ .Type }} me-3">{{ .Message }}</span>
+			{{ end }}
 			<span class="navbar-text me-3">
 				<a href="/login"><i class="bi bi-person-fill"></i></a>
 				{{ .User }}
