@@ -3,6 +3,7 @@ package controller
 import (
 	"net/http"
 
+	"github.com/Gornak40/crosspawn/internal/alerts"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
@@ -15,6 +16,10 @@ func (s *Server) CodereviewGET(c *gin.Context) {
 	problem := session.Get("problem")
 
 	if contest == nil || problem == nil {
+		_ = alerts.Add(session, alerts.Alert{
+			Message: "Please select contest and problem",
+			Type:    alerts.TypeInfo,
+		})
 		c.Redirect(http.StatusFound, "/")
 
 		return
@@ -26,5 +31,6 @@ func (s *Server) CodereviewGET(c *gin.Context) {
 		"User":      user,
 		"CodeTitle": contest,
 		"Code":      problem,
+		"Flashes":   alerts.Get(session),
 	})
 }

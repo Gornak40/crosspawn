@@ -3,6 +3,7 @@ package controller
 import (
 	"net/http"
 
+	"github.com/Gornak40/crosspawn/internal/alerts"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
@@ -26,8 +27,9 @@ func (s *Server) IndexGET(c *gin.Context) {
 	}
 
 	c.HTML(http.StatusOK, "index.html", gin.H{
-		"Title": "Home",
-		"User":  user,
+		"Title":   "Home",
+		"User":    user,
+		"Flashes": alerts.Get(session),
 	})
 }
 

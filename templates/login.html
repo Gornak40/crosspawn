@@ -7,6 +7,7 @@
 				<div class="card-body">
 					{{ if .User }}
 					<form action="/logout" method="POST">
+						<legend>User Profile</legend>
 						<div class="mb-3">
 							<label>You logged as <b>{{ .User }}</b></label>
 						</div>
@@ -14,6 +15,7 @@
 					</form>
 					{{ else }}
 					<form action="/login" method="POST">
+						<legend>User Login</legend>
 						<div class="mb-3">
 							<label for="ejLogin" class="form-label">Ejudge login</label>
 							<input type="text" class="form-control" id="ejLogin" name="ejLogin" required>
@@ -21,6 +23,11 @@
 						<div class="mb-3">
 							<label for="ejPassword" class="form-label">Ejudge password</label>
 							<input type="password" class="form-control" id="ejPassword" name="ejPassword" required>
+						</div>
+						<div class="mb-3">
+							<label for="ejContest" class="form-label">Ejudge contest (any contest you have access to is
+								fine)</label>
+							<input type="number" class="form-control" id="ejContest" name="ejContest" required>
 						</div>
 						<button type="submit" class="btn btn-primary btn-lg">Submit</button>
 					</form>

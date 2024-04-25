@@ -1,10 +1,10 @@
-# crosspawn
+# CrossPawn
 
 *Cross review microservice developed for the Ejudge ecosystem.*
 
 ## Config
 
-Create `config.ini` file in project directory.
+Create `config.ini` in project directory.
 
 ```ini
 [ejudge]
@@ -22,10 +22,30 @@ POLL_BATCH_SIZE = 50
 POLL_DELAY_SECONDS = 10
 ```
 
+## Build
+
+```bash
+make
+```
+
+## Generate JWT
+
+You can generate personal token for admin user.
+
+```bash
+./jwtsign.sh --user gorilla --duration 24h
+```
+
 ## Usage
 
-Generate personal admin `jwt` with `./jwtsign.sh` script.
+Start poller.
 
-Run poller with `make run-poller` command.
+```bash
+make run-poller
+```
 
-Run server with `make run-crosspawn` command.
+Start server.
+
+```bash
+make run-crossspawn
+```
