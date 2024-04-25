@@ -46,7 +46,7 @@ func (s *Server) ManagePOST(c *gin.Context) {
 		return
 	}
 
-	dbContest := models.NewContest(contest)
+	dbContest := models.NewContestFromEj(contest)
 	if res := s.db.Create(dbContest); res.Error != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": res.Error.Error()})
 

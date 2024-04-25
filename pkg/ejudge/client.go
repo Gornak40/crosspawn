@@ -6,14 +6,16 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/http/cookiejar"
 	"net/url"
 
 	"github.com/Gornak40/crosspawn/config"
 )
 
 var (
-	ErrBadStatusCode = errors.New("bad status code")
-	ErrBadResult     = errors.New("bad result")
+	ErrBadStatusCode      = errors.New("bad status code")
+	ErrBadResult          = errors.New("bad result")
+	ErrInvalidCredentials = errors.New("invalid credentials")
 )
 
 type EjClient struct {
@@ -22,9 +24,13 @@ type EjClient struct {
 }
 
 func NewEjClient(cfg *config.EjConfig) *EjClient {
+	jar, _ := cookiejar.New(nil)
+
 	return &EjClient{
-		cfg:    cfg,
-		client: &http.Client{},
+		cfg: cfg,
+		client: &http.Client{
+			Jar: jar,
+		},
 	}
 }
 
@@ -36,7 +42,7 @@ type ejAnswer struct {
 	Result json.RawMessage `json:"result"`
 }
 
-func (ej *EjClient) shoot(ctx context.Context, method string, params url.Values) (*ejAnswer, error) {
+func (ej *EjClient) shootAPI(ctx context.Context, method string, params url.Values) (*ejAnswer, error) {
 	link, err := url.JoinPath(ej.cfg.URL, method)
 	if err != nil {
 		return nil, err

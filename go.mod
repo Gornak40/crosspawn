@@ -1,12 +1,12 @@
 module github.com/Gornak40/crosspawn
 
-go 1.21.9
+go 1.22.2
 
 require (
 	github.com/gin-contrib/sessions v1.0.0
 	github.com/gin-gonic/gin v1.9.1
+	github.com/go-zoox/ini v1.0.4
 	github.com/golang-jwt/jwt/v5 v5.2.1
-	github.com/joho/godotenv v1.5.1
 	github.com/sirupsen/logrus v1.9.3
 	gorm.io/driver/sqlite v1.5.5
 	gorm.io/gorm v1.25.9
@@ -21,6 +21,8 @@ require (
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/go-playground/validator/v10 v10.19.0 // indirect
+	github.com/go-zoox/core-utils v1.0.4 // indirect
+	github.com/go-zoox/tag v1.0.6 // indirect
 	github.com/goccy/go-json v0.10.2 // indirect
 	github.com/gorilla/context v1.1.2 // indirect
 	github.com/gorilla/securecookie v1.1.2 // indirect

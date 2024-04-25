@@ -9,7 +9,7 @@ import (
 
 type ejMaskBit uint
 
-// Do not touch it! It's from ejudge source.
+// ! Do not touch! It's from ejudge source.
 const (
 	ejRunID ejMaskBit = iota
 	ejSize
@@ -54,13 +54,17 @@ func getFieldMask(need ...ejMaskBit) string {
 	return strconv.FormatUint(mask, 10)
 }
 
+type EjRun struct {
+	RunID     uint   `json:"run_id"`
+	ContestID uint   `json:"-"` // not working, but it's not a problem
+	UserLogin string `json:"user_login"`
+	UserName  string `json:"user_name"`
+	StatusStr string `json:"status_str"`
+}
+
 type EjRuns struct {
-	Runs []struct {
-		RunID     uint   `json:"run_id"`
-		UserLogin string `json:"user_login"`
-		UserName  string `json:"user_name"`
-		StatusStr string `json:"status_str"`
-	} `json:"runs"`
+	Runs      []EjRun `json:"runs"`
+	TotalRuns uint    `json:"total_runs"`
 }
 
 func (ej *EjClient) GetContestRuns(id uint, filter string) (*EjRuns, error) {
@@ -71,7 +75,7 @@ func (ej *EjClient) GetContestRuns(id uint, filter string) (*EjRuns, error) {
 		"filter_expr": {filter},
 		"field_mask":  {fieldMask},
 	}
-	answer, err := ej.shoot(context.TODO(), "ej/api/v1/master/list-runs-json", params)
+	answer, err := ej.shootAPI(context.TODO(), "ej/api/v1/master/list-runs-json", params)
 	if err != nil {
 		return nil, err
 	}
@@ -79,6 +83,10 @@ func (ej *EjClient) GetContestRuns(id uint, filter string) (*EjRuns, error) {
 	var contest EjRuns
 	if err := json.Unmarshal(answer.Result, &contest); err != nil {
 		return nil, err
+	}
+
+	for i := range contest.Runs {
+		contest.Runs[i].ContestID = id
 	}
 
 	return &contest, nil

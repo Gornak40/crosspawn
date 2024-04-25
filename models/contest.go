@@ -2,7 +2,6 @@ package models
 
 import (
 	"strings"
-	"time"
 
 	"github.com/Gornak40/crosspawn/pkg/ejudge"
 	"gorm.io/gorm"
@@ -15,11 +14,11 @@ type Contest struct {
 	EjudgeName         string `gorm:"not null;type:varchar(128)"`
 	EjudgeProblemsList string `gorm:"not null;type:varchar(128)"`
 
-	ReviewActive   bool      `gorm:"not null;default:true"`
-	LastUpdateTime time.Time `gorm:"not null;default:unixepoch"`
+	ReviewActive bool `gorm:"not null;default:true"`
+	MaxRunID     uint `gorm:"not null"` // not inclusive
 }
 
-func NewContest(contest *ejudge.EjContest) *Contest {
+func NewContestFromEj(contest *ejudge.EjContest) *Contest {
 	problemsList := make([]string, 0, len(contest.Problems))
 	for _, p := range contest.Problems {
 		problemsList = append(problemsList, p.ShortName)

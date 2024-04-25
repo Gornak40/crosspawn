@@ -53,7 +53,7 @@ func (s *Server) AdminPOST(c *gin.Context) {
 
 func (s *Server) validateJWT(t, user string) error {
 	claims := jwt.MapClaims{}
-	_, err := jwt.ParseWithClaims(t, claims, func(token *jwt.Token) (interface{}, error) {
+	_, err := jwt.ParseWithClaims(t, claims, func(_ *jwt.Token) (interface{}, error) {
 		return []byte(s.cfg.JWTSecret), nil
 	})
 	if err != nil {
