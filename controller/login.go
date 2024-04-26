@@ -20,9 +20,18 @@ func (s *Server) LoginGET(c *gin.Context) {
 	session := sessions.Default(c)
 	user := session.Get("user")
 
+	if user != nil {
+		_ = alerts.Add(session, alerts.Alert{
+			Message: "Logout first",
+			Type:    alerts.TypeWarning,
+		})
+		c.Redirect(http.StatusFound, "/profile")
+
+		return
+	}
+
 	c.HTML(http.StatusOK, "login.html", gin.H{
 		"Title":   "Login",
-		"User":    user,
 		"Flashes": alerts.Get(session),
 	})
 }

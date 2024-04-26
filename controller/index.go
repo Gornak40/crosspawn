@@ -119,8 +119,8 @@ func (s *Server) IndexPOST(c *gin.Context) {
 		ContestID: dbRun.EjudgeContestID,
 		Problem:   dbRun.EjudgeName,
 	}
-	data, _ := json.Marshal(rctx) //nolint:errchkjson // It's my JSON
-	session.Set("submit", string(data))
+	_, _ = json.Marshal(rctx) //nolint:errchkjson // It's my JSON
+	session.Set("submit", &rctx)
 	_ = session.Save()
 
 	_ = alerts.Add(session, alerts.Alert{

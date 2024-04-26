@@ -1,6 +1,8 @@
 package controller
 
 import (
+	"encoding/gob"
+
 	"github.com/Gornak40/crosspawn/config"
 	"github.com/Gornak40/crosspawn/pkg/ejudge"
 	"github.com/gin-contrib/sessions"
@@ -28,6 +30,8 @@ func NewServer(db *gorm.DB, ej *ejudge.EjClient, cfg *config.ServerConfig) *Serv
 func (s *Server) InitRouter() *gin.Engine {
 	r := gin.Default()
 
+	gob.Register(reviewContext{})
+
 	store := cookie.NewStore([]byte(s.cfg.GinSecret))
 	r.Use(sessions.Sessions(sessionName, store))
 
@@ -42,18 +46,27 @@ func (s *Server) InitRouter() *gin.Engine {
 	ua := r.Group("/", s.userMiddleware)
 	{
 		ua.GET("/", s.IndexGET)
-		ua.GET("/codereview", s.CodereviewGET)
+		ua.POST("/", s.IndexPOST)
+
 		ua.GET("/admin", s.AdminGET)
+		ua.POST("/admin", s.AdminPOST)
+
+		ua.GET("/profile", s.ProfileGET)
 
 		ua.POST("/logout", s.LogoutPOST)
-		ua.POST("/", s.IndexPOST)
-		ua.POST("/admin", s.AdminPOST)
+	}
+
+	ca := ua.Group("/codereview", s.codereviewMiddleware)
+	{
+		ca.GET("/", s.CodereviewGET)
+		ca.POST("/", s.CodereviewPOST)
 	}
 
 	aa := ua.Group("/manage", s.adminMiddleware)
 	{
 		aa.GET("/", s.ManageGET)
 		aa.POST("/", s.ManagePOST)
+
 		aa.POST("/flip", s.ManageFlipPOST)
 	}
 
