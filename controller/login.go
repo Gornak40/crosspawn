@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/Gornak40/crosspawn/internal/alerts"
+	"github.com/Gornak40/crosspawn/models"
 	"github.com/Gornak40/crosspawn/pkg/ejudge"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
@@ -44,6 +45,11 @@ func (s *Server) LoginPOST(c *gin.Context) {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 
 		return
+	}
+
+	dbUser := models.NewUserFromForm(form.Login, form.Password)
+	if err := s.db.Where(&models.User{EjudgeLogin: form.Login}).FirstOrCreate(&dbUser).Error; err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}
 
 	session.Set("user", form.Login)

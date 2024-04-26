@@ -1,10 +1,12 @@
 package ejudge
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"net/http"
 	"net/http/cookiejar"
 	"net/url"
@@ -42,7 +44,7 @@ type ejAnswer struct {
 	Result json.RawMessage `json:"result"`
 }
 
-func (ej *EjClient) shootAPI(ctx context.Context, method string, params url.Values) (*ejAnswer, error) {
+func (ej *EjClient) shootRaw(ctx context.Context, method string, params url.Values) ([]byte, error) {
 	link, err := url.JoinPath(ej.cfg.URL, method)
 	if err != nil {
 		return nil, err
@@ -63,8 +65,17 @@ func (ej *EjClient) shootAPI(ctx context.Context, method string, params url.Valu
 		return nil, fmt.Errorf("%w: %d", ErrBadStatusCode, resp.StatusCode)
 	}
 
+	return io.ReadAll(resp.Body)
+}
+
+func (ej *EjClient) shootAPI(ctx context.Context, method string, params url.Values) (*ejAnswer, error) {
+	data, err := ej.shootRaw(ctx, method, params)
+	if err != nil {
+		return nil, err
+	}
+
 	var answer ejAnswer
-	if err := json.NewDecoder(resp.Body).Decode(&answer); err != nil {
+	if err := json.NewDecoder(bytes.NewReader(data)).Decode(&answer); err != nil {
 		return nil, err
 	}
 	if !answer.OK {
