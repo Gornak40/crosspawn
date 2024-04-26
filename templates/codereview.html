@@ -10,7 +10,7 @@
 					<text class="text-warning">{{ .ContestID }}</text>
 					<i class="bi bi-arrow-right"></i>
 					<text class="text-info">{{ .Problem }}</text>
-					{{ .RunID }}
+					<!-- {{ .RunID }} -->
 				</h5>
 				<div class="card-body" style="overflow-y: auto; max-height: 750px;">
 					<pre><code>{{ .Source }}</code></pre>
@@ -25,9 +25,15 @@
 				</div>
 			</div>
 
-			<div class="btn-group my-3" role="group">
-				<button class="btn btn-success btn-lg" id="reviewAprove">Aprove</button>
-				<button class="btn btn-danger btn-lg" id="reviewReject">Reject</button>
+			<div class="d-flex my-3">
+				<form method="POST" action="/codereview">
+					<button class="btn btn-success btn-lg" id="reviewAprove">Aprove</button>
+					<input type="hidden" name="ratingDelta" value="1">
+				</form>
+				<form method="POST" action="/codereview">
+					<button class="btn btn-danger btn-lg ms-2" id="reviewReject">Reject</button>
+					<input type="hidden" name="ratingDelta" value="-1">
+				</form>
 			</div>
 			{{ end }}
 		</div>
@@ -42,18 +48,8 @@
 				e.preventDefault();
 				alert('Comment is required for the reject.');
 				$('#reviewComment').focus();
-			} else {
-				// TODO: REJECT
-				alert('REJECT');
 			}
 		});
-
-		$('#reviewAprove').click(function (e) {
-			var comment = $('#reviewComment').val().trim();
-			// TODO: APPROVE
-			alert('APPROVE');
-		});
-
 	});
 </script>
 

@@ -5,15 +5,6 @@
 		<div class="col-md-6 offset-md-3">
 			<div class="card">
 				<div class="card-body">
-					{{ if .User }}
-					<form action="/logout" method="POST">
-						<legend>User Profile</legend>
-						<div class="mb-3">
-							<label>You logged as <b>{{ .User }}</b></label>
-						</div>
-						<button type="submit" class="btn btn-primary btn-lg">Logout</button>
-					</form>
-					{{ else }}
 					<form action="/login" method="POST">
 						<legend>User Login</legend>
 						<div class="mb-3">
@@ -31,7 +22,6 @@
 						</div>
 						<button type="submit" class="btn btn-primary btn-lg">Submit</button>
 					</form>
-					{{ end }}
 				</div>
 			</div>
 		</div>

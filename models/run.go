@@ -14,6 +14,7 @@ type Run struct {
 	EjudgeName      string `gorm:"not null;type:varchar(32)"`
 
 	ReviewCount uint `gorm:"not null"`
+	Rating      int  `gorm:"not null"`
 }
 
 func NewRunFromEj(run *ejudge.EjRun) *Run {
