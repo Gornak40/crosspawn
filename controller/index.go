@@ -115,7 +115,7 @@ func (s *Server) IndexPOST(c *gin.Context) {
 	}
 
 	rctx := reviewContext{
-		RunID:     dbRun.ID,
+		RunID:     dbRun.EjudgeID,
 		ContestID: dbRun.EjudgeContestID,
 		Problem:   dbRun.EjudgeName,
 	}

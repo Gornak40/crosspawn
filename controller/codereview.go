@@ -31,7 +31,14 @@ func (s *Server) CodereviewGET(c *gin.Context) {
 		return
 	}
 
-	// TODO: get code from ejudge
+	source, err := s.ej.GetRunSource(submit.ContestID, submit.RunID)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+
+		return
+	}
+
+	submit.Source = source
 	c.HTML(http.StatusOK, "codereview.html", gin.H{
 		"Title":   "Review",
 		"User":    user,
