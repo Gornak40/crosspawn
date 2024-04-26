@@ -90,7 +90,7 @@ func (s *Server) adminMiddleware(c *gin.Context) {
 	token, ok := session.Get("jwt").(string)
 	if !ok {
 		_ = alerts.Add(session, alerts.Alert{
-			Message: "You should enter JWT",
+			Message: "Enter admin JWT",
 			Type:    alerts.TypeWarning,
 		})
 		c.Redirect(http.StatusFound, "/admin")

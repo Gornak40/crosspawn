@@ -9,8 +9,8 @@ import (
 
 func (s *Server) Poll() error {
 	var contests []models.Contest
-	if res := s.db.Where("review_active = 1").Find(&contests); res.Error != nil {
-		return res.Error
+	if err := s.db.Where(&models.Contest{ReviewActive: true}).Find(&contests).Error; err != nil {
+		return err
 	}
 
 	for _, contest := range contests {
@@ -34,9 +34,9 @@ func (s *Server) pollContest(dbContest *models.Contest) error {
 	}
 
 	for _, run := range runs.Runs {
-		logrus.Info(run)                              // TODO: remove
-		dbRun := models.NewRunFromEj(&run, "babayka") //nolint:gosec // G601: Implicit memory aliasing in for loop.
-		if res := s.db.Create(dbRun); res.Error != nil {
+		logrus.Info(run)                   // TODO: move to debug
+		dbRun := models.NewRunFromEj(&run) //nolint:gosec // G601: Implicit memory aliasing in for loop.
+		if err := s.db.Create(dbRun).Error; err != nil {
 			logrus.WithError(err).WithFields(logrus.Fields{"contestID": run.ContestID, "runID": run.RunID}).
 				Error("failed to save run")
 		}

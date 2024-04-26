@@ -29,6 +29,7 @@ type ServerConfig struct {
 	JWTSecret        string `ini:"JWT_SECRET"`
 	PollBatchSize    int64  `ini:"POLL_BATCH_SIZE"`
 	PollDelaySeconds int64  `ini:"POLL_DELAY_SECONDS"`
+	ReviewLimit      int64  `ini:"REVIEW_LIMIT"`
 }
 
 func NewConfig() (*Config, error) {

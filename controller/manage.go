@@ -18,8 +18,8 @@ func (s *Server) ManageGET(c *gin.Context) {
 	user := session.Get("user")
 
 	var contests []models.Contest
-	if res := s.db.Find(&contests); res.Error != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": res.Error.Error()})
+	if err := s.db.Find(&contests).Error; err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 
 		return
 	}
@@ -32,6 +32,7 @@ func (s *Server) ManageGET(c *gin.Context) {
 	})
 }
 
+// TODO: add check for judge credentials.
 // TODO: add check for acm format.
 func (s *Server) ManagePOST(c *gin.Context) {
 	var form manageForm
@@ -49,8 +50,8 @@ func (s *Server) ManagePOST(c *gin.Context) {
 	}
 
 	dbContest := models.NewContestFromEj(contest)
-	if res := s.db.Create(dbContest); res.Error != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": res.Error.Error()})
+	if err := s.db.Create(dbContest).Error; err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 
 		return
 	}
@@ -67,15 +68,15 @@ func (s *Server) ManageFlipPOST(c *gin.Context) {
 	}
 
 	dbContest := models.Contest{EjudgeID: form.ContestID}
-	if err := s.db.Where("ejudge_id = ?", form.ContestID).First(&dbContest).Error; err != nil {
+	if err := s.db.Where(&dbContest).First(&dbContest).Error; err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 
 		return
 	}
 
 	dbContest.ReviewActive = !dbContest.ReviewActive
-	if res := s.db.Save(&dbContest); res.Error != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": res.Error.Error()})
+	if err := s.db.Save(&dbContest).Error; err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 
 		return
 	}

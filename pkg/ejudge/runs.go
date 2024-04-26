@@ -60,6 +60,7 @@ type EjRun struct {
 	UserLogin string `json:"user_login"`
 	UserName  string `json:"user_name"`
 	StatusStr string `json:"status_str"`
+	ProbName  string `json:"prob_name"`
 }
 
 type EjRuns struct {
@@ -68,7 +69,7 @@ type EjRuns struct {
 }
 
 func (ej *EjClient) GetContestRuns(id uint, filter string) (*EjRuns, error) {
-	fieldMask := getFieldMask(ejRunID, ejUserLogin, ejUserName, ejResult)
+	fieldMask := getFieldMask(ejRunID, ejUserLogin, ejUserName, ejResult, ejProbName)
 
 	params := url.Values{
 		"contest_id":  {strconv.Itoa(int(id))},

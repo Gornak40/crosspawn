@@ -1,13 +1,18 @@
 {{ template "header.html" . }}
 
-<div class="container mt-3">
+<div class="container mt-5">
 	<div class="row justify-content-center">
 
 		<div class="col-md-8">
+			{{ with .Submit }}
 			<div class="card">
-				<div class="card-header">{{ .CodeTitle }}</div>
+				<h5 class="card-header font-monospace">
+					<text class="text-warning">{{ .ContestID }}</text>
+					<i class="bi bi-arrow-right"></i>
+					<text class="text-info">{{ .Problem }}</text>
+				</h5>
 				<div class="card-body" style="overflow-y: auto; max-height: 750px;">
-					<pre><code>{{ .Code }}</code></pre>
+					<pre><code>{{ .Source }}</code></pre>
 				</div>
 			</div>
 
@@ -23,7 +28,7 @@
 				<button class="btn btn-success btn-lg" id="reviewAprove">Aprove</button>
 				<button class="btn btn-danger btn-lg" id="reviewReject">Reject</button>
 			</div>
-
+			{{ end }}
 		</div>
 	</div>
 </div>

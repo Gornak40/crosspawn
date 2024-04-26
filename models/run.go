@@ -8,20 +8,19 @@ import (
 type Run struct {
 	gorm.Model
 
-	EjudgeID        uint    `gorm:"not null"`
-	EjudgeContestID uint    `gorm:"not null"`
-	EjudgeUserLogin string  `gorm:"not null;type:varchar(128)"`
-	EjudgeSource    string  `gorm:"not null"`
-	EjudgeContest   Contest `gorm:"foreignKey:EjudgeContestID;not null"`
+	EjudgeID        uint   `gorm:"not null"`
+	EjudgeContestID uint   `gorm:"not null"`
+	EjudgeUserLogin string `gorm:"not null;type:varchar(128)"`
+	EjudgeName      string `gorm:"not null;type:varchar(32)"`
 
 	ReviewCount uint `gorm:"not null"`
 }
 
-func NewRunFromEj(run *ejudge.EjRun, source string) *Run {
+func NewRunFromEj(run *ejudge.EjRun) *Run {
 	return &Run{
 		EjudgeID:        run.RunID,
 		EjudgeContestID: run.ContestID,
 		EjudgeUserLogin: run.UserLogin,
-		EjudgeSource:    source,
+		EjudgeName:      run.ProbName,
 	}
 }
