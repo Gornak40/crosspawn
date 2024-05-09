@@ -126,7 +126,7 @@ func (s *Server) IndexPOST(c *gin.Context) {
 }
 
 func (s *Server) reviewValid(user string, contestID uint, problem string) error {
-	filter := fmt.Sprintf("login == '%s' && prob == '%s' && (status == OK || status == PR)", user, problem)
+	filter := fmt.Sprintf("login == '%s' && prob == '%s' && status == OK", user, problem)
 	runs, err := s.ej.GetContestRuns(contestID, filter)
 	if err != nil {
 		return err

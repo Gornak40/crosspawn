@@ -76,7 +76,7 @@ func (ej *EjClient) GetContestRuns(id uint, filter string) (*EjRuns, error) {
 		"filter_expr": {filter},
 		"field_mask":  {fieldMask},
 	}
-	answer, err := ej.shootAPI(context.TODO(), "ej/api/v1/master/list-runs-json", params)
+	answer, err := ej.shootEjAPIGet(context.TODO(), "ej/api/v1/master/list-runs-json", params)
 	if err != nil {
 		return nil, err
 	}
