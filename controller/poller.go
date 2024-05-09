@@ -39,7 +39,7 @@ func runStatusFromDB(dbStatus *models.Run) *ejudge.EjStatusChange {
 }
 
 func (s *Server) pollContest(dbContest *models.Contest) error {
-	runs, err := s.ej.GetContestRuns(dbContest.EjudgeID, "status == PR")
+	runs, err := s.ej.GetContestRuns(dbContest.EjudgeID, "status == PR", int(s.cfg.PollMaxRuns))
 	if err != nil {
 		return err
 	}
@@ -71,7 +71,7 @@ func (s *Server) pollContest(dbContest *models.Contest) error {
 			if err := s.ej.ChangeRunStatus(status); err != nil {
 				logrus.WithError(err).Error("failed to change run status")
 			}
-			logrus.WithField("runID", dbRun.EjudgeID).Info("run review is done")
+			logrus.WithField("runID", dbRun.EjudgeID).Info("run review done")
 			if err := s.db.Delete(&dbRun).Error; err != nil { //nolint:gosec // G601: Implicit memory aliasing in for loop.
 				logrus.WithError(err).Error("failed to delete run")
 			}
