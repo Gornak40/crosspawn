@@ -27,7 +27,6 @@ type DBConfig struct {
 type ServerConfig struct {
 	GinSecret        string `ini:"GIN_SECRET"`
 	JWTSecret        string `ini:"JWT_SECRET"`
-	PollBatchSize    int64  `ini:"POLL_BATCH_SIZE"`
 	PollDelaySeconds int64  `ini:"POLL_DELAY_SECONDS"`
 	ReviewLimit      int64  `ini:"REVIEW_LIMIT"`
 }
