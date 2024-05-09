@@ -59,12 +59,7 @@ func (s *Server) IndexPOST(c *gin.Context) {
 	}
 
 	session := sessions.Default(c)
-	user, ok := session.Get("user").(string)
-	if !ok {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "user is not authenticated"})
-
-		return
-	}
+	user, _ := session.Get("user").(string)
 
 	// User must not have current review
 	if session.Get("submit") != nil {

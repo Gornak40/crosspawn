@@ -1,17 +1,12 @@
 package controller
 
 import (
-	"errors"
 	"net/http"
 
 	"github.com/Gornak40/crosspawn/internal/alerts"
 	"github.com/Gornak40/crosspawn/models"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
-)
-
-var (
-	errInvalidSessionSubmit = errors.New("invalid submit in session")
 )
 
 type codereviewFrom struct {
@@ -21,13 +16,7 @@ type codereviewFrom struct {
 func (s *Server) CodereviewGET(c *gin.Context) {
 	session := sessions.Default(c)
 	user := session.Get("user")
-
-	submit, ok := session.Get("submit").(reviewContext)
-	if !ok {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": errInvalidSessionSubmit.Error()})
-
-		return
-	}
+	submit, _ := session.Get("submit").(reviewContext)
 
 	source, err := s.ej.GetRunSource(submit.ContestID, submit.RunID)
 	if err != nil {
@@ -55,13 +44,8 @@ func (s *Server) CodereviewPOST(c *gin.Context) {
 	}
 
 	session := sessions.Default(c)
-
-	submit, ok := session.Get("submit").(reviewContext)
-	if !ok {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": errInvalidSessionSubmit.Error()})
-
-		return
-	}
+	submit, _ := session.Get("submit").(reviewContext)
+	user, _ := session.Get("user").(string)
 
 	var dbRun models.Run
 	quRun := models.Run{EjudgeID: submit.RunID, EjudgeContestID: submit.ContestID}
@@ -82,6 +66,27 @@ func (s *Server) CodereviewPOST(c *gin.Context) {
 
 	session.Delete("submit")
 	_ = session.Save()
+
+	var dbUser models.User
+	quUser := models.User{EjudgeLogin: user}
+	if err := s.db.Where(&quUser).First(&dbUser).Error; err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+
+		return
+	}
+
+	switch {
+	case form.RatingDelta > 0:
+		dbUser.ReviewAproveCount++
+	case form.RatingDelta < 0:
+		dbUser.ReviewRejectCount++
+	}
+
+	if err := s.db.Save(&dbUser).Error; err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+
+		return
+	}
 
 	_ = alerts.Add(session, alerts.Alert{
 		Message: "Review processed",

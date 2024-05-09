@@ -1,6 +1,8 @@
 package models
 
-import "gorm.io/gorm"
+import (
+	"gorm.io/gorm"
+)
 
 // TODO: set EjudgeID and hash password.
 type User struct {
@@ -10,8 +12,8 @@ type User struct {
 	EjudgeLogin    string `gorm:"unique;not null;type:varchar(128)"`
 	EjudgePassword string `gorm:"not null;type:varchar(128)"`
 
-	ReviewApproveCount uint `gorm:"not null"`
-	ReviewRejectCount  uint `gorm:"not null"`
+	ReviewAproveCount uint `gorm:"not null"`
+	ReviewRejectCount uint `gorm:"not null"`
 }
 
 func NewUserFromForm(login, password string) *User {
