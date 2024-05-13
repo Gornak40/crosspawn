@@ -15,7 +15,6 @@ type Contest struct {
 	EjudgeProblemsList string `gorm:"not null;type:varchar(128)"`
 
 	ReviewActive bool `gorm:"not null;default:true"`
-	MaxRunID     uint `gorm:"not null"` // not inclusive
 }
 
 func NewContestFromEj(contest *ejudge.EjContest) *Contest {

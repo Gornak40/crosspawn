@@ -50,7 +50,7 @@ func (s *Server) AdminPOST(c *gin.Context) {
 	session.Set("jwt", form.JWT)
 	_ = session.Save()
 
-	_ = alerts.Add(session, alerts.Alert{ // TODO: add expiration time
+	_ = alerts.Add(session, alerts.Alert{
 		Message: "JWT is valid",
 		Type:    alerts.TypeSuccess,
 	})

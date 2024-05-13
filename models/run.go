@@ -8,8 +8,8 @@ import (
 type Run struct {
 	gorm.Model
 
-	EjudgeID        uint   `gorm:"not null"`
-	EjudgeContestID uint   `gorm:"not null"`
+	EjudgeID        uint   `gorm:"not null;uniqueIndex:idx_full_id"`
+	EjudgeContestID uint   `gorm:"not null;uniqueIndex:idx_full_id"`
 	EjudgeUserLogin string `gorm:"not null;type:varchar(128)"`
 	EjudgeName      string `gorm:"not null;type:varchar(32)"`
 

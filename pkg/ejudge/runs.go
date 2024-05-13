@@ -68,15 +68,16 @@ type EjRuns struct {
 	TotalRuns uint    `json:"total_runs"`
 }
 
-func (ej *EjClient) GetContestRuns(id uint, filter string) (*EjRuns, error) {
+func (ej *EjClient) GetContestRuns(id uint, filter string, count int) (*EjRuns, error) {
 	fieldMask := getFieldMask(ejRunID, ejUserLogin, ejUserName, ejResult, ejProbName)
 
 	params := url.Values{
 		"contest_id":  {strconv.Itoa(int(id))},
 		"filter_expr": {filter},
+		"last_run":    {strconv.Itoa(-count)}, // some ejudge stuff
 		"field_mask":  {fieldMask},
 	}
-	answer, err := ej.shootAPI(context.TODO(), "ej/api/v1/master/list-runs-json", params)
+	answer, err := ej.shootEjAPIGet(context.TODO(), "ej/api/v1/master/list-runs-json", params)
 	if err != nil {
 		return nil, err
 	}
