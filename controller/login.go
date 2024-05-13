@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/Gornak40/crosspawn/internal/alerts"
@@ -51,7 +52,16 @@ func (s *Server) LoginPOST(c *gin.Context) {
 		Password:  form.Password,
 		ContestID: form.ContestID,
 	}); err != nil {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		if errors.Is(err, ejudge.ErrInvalidCredentials) {
+			_ = alerts.Add(session, alerts.Alert{
+				Message: "Invalid credentials",
+				Type:    alerts.TypeDanger,
+			})
+			c.Redirect(http.StatusFound, "/login")
+			c.Abort()
+		} else {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		}
 
 		return
 	}
