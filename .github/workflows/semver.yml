@@ -1,0 +1,25 @@
+name: Semver
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  set_tag:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    - name: Run version bump script
+      run: |
+        VERSION=$(./scripts/semver.sh)
+        echo "Project version: $VERSION"
+
+        git config --global user.name "Gornak40[bot]"
+        git config --global user.email "noreply@algolymp.ru"
+
+        MESSAGE=$(git log -1 --pretty=%B)
+        git tag $VERSION -m $MESSAGE
+        git push origin $VERSION
